@@ -13,7 +13,7 @@ const panelConfig = {
       description: "Adds a button to toggle a smartblock workflow. If nothing is entered a button will not be added",
       action: {type:        "input",
               placeholder: "none",
-              onChange:    (evt) => { console.log("Input Changed!", evt['target'['value']]); }}},
+              onChange:    (evt) => { console.log("Input Changed!", evt['target']['value']); }}},
       {id:     "button-order",
        name:   "Start Index",
        description: "Where in the bottom bar to start adding the buttons",
@@ -49,6 +49,14 @@ const createImageButton = (imageURL) => {
   popoverButton.appendChild(popoverImage);
 
   return popoverButton;
+}
+
+function destroyButton(id) {
+  let button = document.querySelectorAll(`#${id}`);
+  console.log(button)
+  button.forEach(tog => {
+      tog.remove();
+  });
 }
 
 function toggleBlockClose() {    
@@ -138,14 +146,18 @@ async function onload({extensionAPI}) {
       var roam_topbar = document.querySelector('#rm-mobile-bar');
       if(roam_topbar) {  
         clearInterval(interval);
-
+        // TODO remove button if toggle is turned off
         for (const [key, value] of Object.entries(settings)) {
           console.log(`${key}: ${value}`);
           if( key == 'open-close' && value==true){
             addBlockCloseButton()
-          }
-          if (key == 'smartblock-workflow' && value) {
+          } else if (key == 'open-close' && value==false){
+            // destroyButton('bottomToggleBlockClose')
+          } else if (key == 'smartblock-workflow' && value) {
+            console.log("smartblock", value)
             addSmartBlockButton(value)
+          }  else if (key == 'smartblock-workflow' && value === undefined) {
+            // destroyButton('bottomSmartblockButton')
           }
         }
       }
@@ -156,16 +168,8 @@ async function onload({extensionAPI}) {
 }
 
 function onunload() {
-  let openClose = document.querySelectorAll('#bottomToggleBlockClose');
-
-  openClose.forEach(tog => {
-      tog.remove();
-  });
-  let smartblockButton = document.querySelectorAll('#bottomSmartblockButton');
-
-  smartblockButton.forEach(tog => {
-      tog.remove();
-  });
+  destroyButton('bottomToggleBlockClose');
+  destroyButton('bottomSmartblockButton');
 
   console.log("unload Mobile BottomBar Butto plugin");
 }
