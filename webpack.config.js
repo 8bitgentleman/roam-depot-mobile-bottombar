@@ -1,7 +1,5 @@
 module.exports = {
     externals: {
-        react: "React",
-        "chrono-node": "ChronoNode"
     },
     externalsType: "window",
     entry: './src/index.js',

@@ -7,13 +7,28 @@ const panelConfig = {
        name:        "Open Close Block Button",
        description: "Adds a button to toggle the selected block open/close",
        action:      {type:     "switch",
-                     onChange: (evt) => { console.log("Switch!", evt['target']['checked']); }}},
+                     onChange: (evt) => { 
+                      console.log("Show Open Close Button", evt['target']['checked']);
+                      // toggle button on/off
+                      if (evt['target']['checked']) {
+                        addBlockCloseButton()
+                      } else {
+                        destroyButton('bottomToggleBlockClose')
+                      }
+                    }}},
       {id:     "smartblock-workflow",
       name:   "Input test",
       description: "Adds a button to toggle a smartblock workflow. If nothing is entered a button will not be added",
       action: {type:        "input",
               placeholder: "none",
-              onChange:    (evt) => { console.log("Input Changed!", evt['target']['value']); }}},
+              onChange:    (evt) => { 
+                console.log("Input Changed!", evt['target']['value']); 
+                // check if value is empty
+                let val = evt['target']['value'];
+                if (val.length === 0 || !val.trim()) {
+                  destroyButton('bottomSmartblockButton')
+                }
+              }}},
       {id:     "button-order",
        name:   "Start Index",
        description: "Where in the bottom bar to start adding the buttons",
@@ -93,9 +108,9 @@ function addBlockCloseButton(){
 
 }
 
-function runSmartblockWorkflow(){
+function runSmartblockWorkflow(extensionAPI){
   // trigger the workflow
-  let workflow = 'test'
+  let workflow = extensionAPI.settings.get('smartblock-workflow')
   try {
     window.roamjs.extension.smartblocks.triggerSmartblock({
       srcName: workflow,
@@ -111,7 +126,7 @@ function runSmartblockWorkflow(){
 
 }
 
-function addSmartBlockButton(workflow) {
+function addSmartBlockButton(extensionAPI) {
   var iconURL = 'https://raw.githubusercontent.com/dvargas92495/roamjs-smartblocks/main/src/img/lego3blocks.png';
   var nameToUse = 'bottomSmartblockButton';
 
@@ -124,7 +139,10 @@ function addSmartBlockButton(workflow) {
 
       nextIconButton.insertAdjacentElement("afterend", mainButton);
 
-      mainButton.addEventListener("click", runSmartblockWorkflow);
+      // mainButton.addEventListener("click", runSmartblockWorkflow);
+      mainButton.addEventListener("click", function(){
+        runSmartblockWorkflow(extensionAPI);
+    }, false);
   }
 
 }
@@ -132,34 +150,30 @@ function addSmartBlockButton(workflow) {
 async function onload({extensionAPI}) {
   console.log("load Mobile BottomBar Button plugin");
 
-  // set defaults if they dont' exist
-
   extensionAPI.settings.panel.create(panelConfig);
 
-  let settings = extensionAPI.settings.getAll();
   // only do stuff if current device is mobile
   if (roamAlphaAPI.platform.isTouchDevice) {
     // constantly check if bottom bar is open
     // don't love this, maybe mutationObserver is better?
     var interval = setInterval(function() {
     
-      var roam_topbar = document.querySelector('#rm-mobile-bar');
-      if(roam_topbar) {  
+      var roam_bottombar = document.querySelector('#rm-mobile-bar');
+      console.log(roam_bottombar)
+      if(roam_bottombar) {  
         clearInterval(interval);
         // TODO remove button if toggle is turned off
-        for (const [key, value] of Object.entries(settings)) {
-          console.log(`${key}: ${value}`);
-          if( key == 'open-close' && value==true){
-            addBlockCloseButton()
-          } else if (key == 'open-close' && value==false){
-            // destroyButton('bottomToggleBlockClose')
-          } else if (key == 'smartblock-workflow' && value) {
-            console.log("smartblock", value)
-            addSmartBlockButton(value)
-          }  else if (key == 'smartblock-workflow' && value === undefined) {
-            // destroyButton('bottomSmartblockButton')
-          }
+        if (extensionAPI.settings.get('open-close')) {
+          addBlockCloseButton()
+        } else {
+          destroyButton('bottomToggleBlockClose')
         }
+        if (extensionAPI.settings.get('smartblock-workflow') != undefined) {
+          addSmartBlockButton(extensionAPI)
+        } else {
+          destroyButton('bottomSmartblockButton')
+        }
+
       }
     }, 500);  
 
@@ -171,7 +185,7 @@ function onunload() {
   destroyButton('bottomToggleBlockClose');
   destroyButton('bottomSmartblockButton');
 
-  console.log("unload Mobile BottomBar Butto plugin");
+  console.log("unload Mobile BottomBar Button plugin");
 }
 
 export default {
