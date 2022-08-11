@@ -22,16 +22,17 @@ const panelConfig = {
       action: {type:        "input",
               placeholder: "none",
               onChange:    (evt) => { 
-                console.log("Input Changed!", evt['target']['value']); 
+                console.log("Smartblock Input Changed!", evt['target']['value']); 
                 // check if value is empty
                 let val = evt['target']['value'];
+
                 if (val.length === 0 || !val.trim()) {
                   destroyButton('bottomSmartblockButton')
                 }
               }}},
       {id:     "button-order",
        name:   "Start Index",
-       description: "Where in the bottom bar to start adding the buttons",
+       description: "NOT WORKING:Where in the bottom bar to start adding the buttons",
        action: {type:     "select",
                 items:    ["one", "two", "three"],
                 onChange: (evt) => { console.log("Select Changed!", evt); }}}
@@ -39,6 +40,7 @@ const panelConfig = {
 };
 
 const createIconButton = (icon) => {
+  // create a button using a blueprintjs icon
   const popoverButton = document.createElement("button");
   popoverButton.className = "bp3-button bp3-minimal rm-mobile-button dont-unfocus-block";
   popoverButton.tabIndex = 0;
@@ -52,6 +54,7 @@ const createIconButton = (icon) => {
 };
 
 const createImageButton = (imageURL) => {
+  // create a button using a URL image
   const popoverButton = document.createElement("button");
   popoverButton.className = "bp3-button bp3-minimal rm-mobile-button dont-unfocus-block";
   popoverButton.tabIndex = 0;
@@ -67,6 +70,8 @@ const createImageButton = (imageURL) => {
 }
 
 function destroyButton(id) {
+  // remove a button from the dom
+  // works if there are somehow multiple
   let button = document.querySelectorAll(`#${id}`);
   console.log(button)
   button.forEach(tog => {
@@ -74,7 +79,8 @@ function destroyButton(id) {
   });
 }
 
-function toggleBlockClose() {    
+function toggleBlockClose() {  
+  // get block openn/close status and toggle it 
   let currentBlockOpen = window.roamAlphaAPI.data.pull("[:block/open]", [":block/uid", roamAlphaAPI.ui.getFocusedBlock()['block-uid']])[':block/open'];
   if (currentBlockOpen){
       roamAlphaAPI
@@ -91,6 +97,7 @@ function toggleBlockClose() {
 };
 
 function addBlockCloseButton(){
+  // add a button to toggle close/open
   var iconName = 'arrows-vertical'
   var nameToUse = 'bottomToggleBlockClose';
 
@@ -112,15 +119,14 @@ function runSmartblockWorkflow(extensionAPI){
   // trigger the workflow
   let workflow = extensionAPI.settings.get('smartblock-workflow')
   try {
+    // run workflow on current block
     window.roamjs.extension.smartblocks.triggerSmartblock({
       srcName: workflow,
-      // targetName: 'October 6th, 2021'
       targetUid: roamAlphaAPI.ui.getFocusedBlock()['block-uid']
     });
   } catch (error) {
+    // log error
     console.error(error);
-    // expected output: ReferenceError: nonExistentFunction is not defined
-    // Note - error messages will vary depending on browser
     alert("Smartblock Workflow does not exist")
   }
 
@@ -130,6 +136,7 @@ function addSmartBlockButton(extensionAPI) {
   var iconURL = 'https://raw.githubusercontent.com/dvargas92495/roamjs-smartblocks/main/src/img/lego3blocks.png';
   var nameToUse = 'bottomSmartblockButton';
 
+  // TODO make this check useful
   var checkForButton = document.getElementById(`${nameToUse}-flex-space`);
   if (!checkForButton) {
       var mainButton = createImageButton(iconURL);
@@ -139,7 +146,7 @@ function addSmartBlockButton(extensionAPI) {
 
       nextIconButton.insertAdjacentElement("afterend", mainButton);
 
-      // mainButton.addEventListener("click", runSmartblockWorkflow);
+
       mainButton.addEventListener("click", function(){
         runSmartblockWorkflow(extensionAPI);
     }, false);
@@ -160,19 +167,16 @@ async function onload({extensionAPI}) {
     
       var roam_bottombar = document.querySelector('#rm-mobile-bar');
       console.log(roam_bottombar)
-      if(roam_bottombar) {  
+      if(roam_bottombar) {
+        // once bottom bar is open add buttons and stop checking
+        // TODO how does this re-add buttons that have been removed?
         clearInterval(interval);
-        // TODO remove button if toggle is turned off
         if (extensionAPI.settings.get('open-close')) {
           addBlockCloseButton()
-        } else {
-          destroyButton('bottomToggleBlockClose')
         }
         if (extensionAPI.settings.get('smartblock-workflow') != undefined) {
           addSmartBlockButton(extensionAPI)
-        } else {
-          destroyButton('bottomSmartblockButton')
-        }
+        } 
 
       }
     }, 500);  
