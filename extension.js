@@ -30,11 +30,50 @@ const panelConfig = {
                   destroyButton('bottomSmartblockButton')
                 }
               }}},
+      {id:          "bold-button",
+      name:        "Bold Button",
+      description: "Adds a button to bold the selected text",
+      action:      {type:     "switch",
+                    onChange: (evt) => { 
+                      console.log("Show Bold Button", evt['target']['checked']);
+                      // toggle button on/off
+                      if (evt['target']['checked']) {
+                        textFormatButton('bold')
+                      } else {
+                        destroyButton('formatBlockbold')
+                      }
+                    }}},
+      {id:          "italic-button",
+      name:        "Italicize Button",
+      description: "Adds a button to italicize the selected text",
+      action:      {type:     "switch",
+                    onChange: (evt) => { 
+                      console.log("Show Bold Button", evt['target']['checked']);
+                      // toggle button on/off
+                      if (evt['target']['checked']) {
+                        textFormatButton('italic')
+                      } else {
+                        destroyButton('formatBlockitalic')
+                      }
+                    }}},
+        {id:          "highlight-button",
+        name:        "Highlight Button",
+        description: "Adds a button to highlight the selected text",
+        action:      {type:     "switch",
+                      onChange: (evt) => { 
+                        console.log("Show Bold Button", evt['target']['checked']);
+                        // toggle button on/off
+                        if (evt['target']['checked']) {
+                          textFormatButton('highlight')
+                        } else {
+                          destroyButton('formatBlockhighlight')
+                        }
+                      }}},
       {id:     "button-order",
-       name:   "Start Index",
+       name:   "Button Locations",
        description: "NOT WORKING:Where in the bottom bar to start adding the buttons",
        action: {type:     "select",
-                items:    ["one", "two", "three"],
+                items:    ["Main Bar", "New Panel"],
                 onChange: (evt) => { console.log("Select Changed!", evt); }}}
   ]
 };
@@ -106,7 +145,7 @@ function addBlockCloseButton(){
       var mainButton = createIconButton(iconName);
       mainButton.id = nameToUse;
       var mobileBottomBar = document.getElementById("rm-mobile-bar");
-      var nextIconButton = mobileBottomBar.children[2];
+      var nextIconButton = mobileBottomBar.children[4];
 
       nextIconButton.insertAdjacentElement("afterend", mainButton);
 
@@ -142,13 +181,66 @@ function addSmartBlockButton(extensionAPI) {
       var mainButton = createImageButton(iconURL);
       mainButton.id = nameToUse
       var mobileBottomBar = document.getElementById("rm-mobile-bar");
-      var nextIconButton = mobileBottomBar.children[2];
+      var nextIconButton = mobileBottomBar.children[4];
 
       nextIconButton.insertAdjacentElement("afterend", mainButton);
 
 
       mainButton.addEventListener("click", function(){
         runSmartblockWorkflow(extensionAPI);
+    }, false);
+  }
+
+}
+
+function formatdSelectedText(style="bold"){
+  console.log('next button', style)
+  // replace text between two indexes
+  String.prototype.replaceBetween = function(start, end, what) {
+      return this.substring(0, start) + what + this.substring(end);
+  };
+  // get editing block text and selection info
+  var textArea = document.querySelectorAll("textarea")[0]
+  var text = textArea.value;
+  var indexStart=textArea.selectionStart;
+  var indexEnd=textArea.selectionEnd;
+  var selection = text.substring(indexStart, indexEnd)
+
+  // format selected text
+  if (style=='bold') {
+      var newText = text.replaceBetween(indexStart,indexEnd, `**${selection}**`);
+  } else if (style=='italic') {
+      var newText = text.replaceBetween(indexStart,indexEnd, `__${selection}__`);
+  }
+  else if (style=='highlight') {
+      var newText = text.replaceBetween(indexStart,indexEnd, `^^${selection}^^`);
+  }
+
+  let blockUID = window.roamAlphaAPI.data.pull("[:block/uid]", [":block/uid", roamAlphaAPI.ui.getFocusedBlock()['block-uid']])[':block/uid'];
+
+  // update block with new formatting
+  roamAlphaAPI.updateBlock({"block": 
+            {"uid": blockUID,
+            "string": newText}})
+}
+
+function textFormatButton(style){
+  console.log(style)
+  // add a button to format
+  var iconName = style;
+  var nameToUse = 'formatBlock';
+
+  var checkForButton = document.getElementById(`${nameToUse}-flex-space`);
+  if (!checkForButton) {
+      var mainButton = createIconButton(iconName);
+      mainButton.id = nameToUse+style;
+      var mobileBottomBar = document.getElementById("rm-mobile-bar");
+      var nextIconButton = mobileBottomBar.children[4];
+
+      nextIconButton.insertAdjacentElement("afterend", mainButton);
+      // use anom function so formatdSelectedText doesn't run automatically
+      mainButton.addEventListener("click", function(){
+        formatdSelectedText(style);
     }, false);
   }
 
