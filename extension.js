@@ -263,9 +263,9 @@ async function onload({extensionAPI}) {
         // once bottom bar is open add buttons and stop checking
         // TODO how does this re-add buttons that have been removed?
         clearInterval(interval);
-        if (extensionAPI.settings.get('open-close')) {
-          addBlockCloseButton()
-        }
+        // if (extensionAPI.settings.get('open-close')) {
+        //   addBlockCloseButton()
+        // }
         if (extensionAPI.settings.get('smartblock-workflow') != undefined) {
           addSmartBlockButton(extensionAPI)
         } 
@@ -280,6 +280,9 @@ async function onload({extensionAPI}) {
 function onunload() {
   destroyButton('bottomToggleBlockClose');
   destroyButton('bottomSmartblockButton');
+  destroyButton('formatBlockbold')
+  destroyButton('formatBlockitalic')
+  destroyButton('formatBlockhighlight')
 
   console.log("unload Mobile BottomBar Button plugin");
 }
