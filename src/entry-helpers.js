@@ -22,6 +22,24 @@ export const createMobileIcon = (
     return iconButton;
 };
 
+export const createMobileImage = (
+    id,
+    imageURL
+) => {
+    const iconButton = document.createElement("button");
+    iconButton.id = id;
+    iconButton.className =
+        "bp3-button bp3-minimal rm-mobile-button dont-unfocus-block";
+    iconButton.style.padding = "6px 4px 4px;";
+    const popoverImage = document.createElement("img");
+    popoverImage.src = imageURL;
+    popoverImage.alt = "";
+    popoverImage.width = "15"
+  
+    iconButton.appendChild(popoverImage);
+    return iconButton;
+};
+
 // update-block replaces with a new textarea
 export const fixCursorById = ({
     id,
@@ -36,3 +54,15 @@ export const fixCursorById = ({
         }
         textArea.setSelectionRange(start, end);
     }, 100);
+
+export const destroyButton = ({
+    id,
+}) => {
+    // remove a button from the dom
+    // works if there are somehow multiple
+    let button = document.querySelectorAll(`#${id}`);
+    console.log(button)
+    button.forEach(tog => {
+        tog.remove();
+    });
+}
