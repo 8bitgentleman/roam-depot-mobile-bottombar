@@ -55,10 +55,8 @@ const panelConfig = {
                       onChange: (evt) => { 
                         console.log("Show Bold Button", evt['target']['checked']);
                         // toggle button on/off
-                        if (evt['target']['checked']) {
-                          textFormatButton('bold')
-                        } else {
-                          destroyButton('formatBlockbold')
+                        if (!evt['target']['checked']) {
+                          destroyButton(MOBILE_BOLD_ICON_BUTTON_ID)
                         }
                       }}},
         {id:          "italic-button",
@@ -68,10 +66,8 @@ const panelConfig = {
                       onChange: (evt) => { 
                         console.log("Show Bold Button", evt['target']['checked']);
                         // toggle button on/off
-                        if (evt['target']['checked']) {
-                          textFormatButton('italic')
-                        } else {
-                          destroyButton('formatBlockitalic')
+                        if (!evt['target']['checked']) {
+                          destroyButton(MOBILE_ITALIC_ICON_BUTTON_ID)
                         }
                       }}},
           {id:          "highlight-button",
@@ -81,10 +77,8 @@ const panelConfig = {
                         onChange: (evt) => { 
                           console.log("Show Bold Button", evt['target']['checked']);
                           // toggle button on/off
-                          if (evt['target']['checked']) {
-                            textFormatButton('highlight')
-                          } else {
-                            destroyButton('formatBlockhighlight')
+                          if (!evt['target']['checked']) {
+                            destroyButton(MOBILE_HIGHLIGHT_ICON_BUTTON_ID)
                           }
                         }}},
         {id:     "button-order",
@@ -154,10 +148,22 @@ function onload({extensionAPI}) {
                 toggleBlockClose();
             }
         }
-        if (extensionAPI.settings.get('open-close')) {
-            mobileBar.appendChild(toggleIconButton);
-            toggleIconButton.onclick = () => {
-                toggleBlockClose();
+        if (extensionAPI.settings.get('bold-button')) {
+            mobileBar.appendChild(boldIconButton);
+            boldIconButton.onclick = () => {
+                formatdSelectedText('bold');
+            }
+        }
+        if (extensionAPI.settings.get('italic-button')) {
+            mobileBar.appendChild(italicIconButton);
+            italicIconButton.onclick = () => {
+                formatdSelectedText('italic');
+            }
+        }
+        if (extensionAPI.settings.get('highlight-button')) {
+            mobileBar.appendChild(highlightIconButton);
+            highlightIconButton.onclick = () => {
+                formatdSelectedText('highlight');
             }
         }
         if (extensionAPI.settings.get('smartblock-workflow') != undefined) {
