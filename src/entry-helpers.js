@@ -10,8 +10,8 @@ export const createMobileIcon = (
     iconButton.className =
         "bp3-button bp3-minimal rm-mobile-button dont-unfocus-block";
     iconButton.style.padding = "6px 4px 4px;";
-    const icon = document.createElement("i");
-    icon.className = `zmdi zmdi-hc-fw-rc zmdi-${iconType}`;
+    const icon = document.createElement("span");
+    icon.className = `bp3-icon bp3-icon-${iconType}`;
     icon.style.cursor = "pointer";
     icon.style.color = "rgb(92, 112, 128)";
     icon.style.fontSize = "18px";
