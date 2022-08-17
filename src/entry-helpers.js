@@ -55,13 +55,11 @@ export const fixCursorById = ({
         textArea.setSelectionRange(start, end);
     }, 100);
 
-export const destroyButton = ({
-    id,
-}) => {
+export const destroyButton = (id) => {
     // remove a button from the dom
     // works if there are somehow multiple
+    let selector = `#${id}`
     let button = document.querySelectorAll(`#${id}`);
-    console.log(button)
     button.forEach(tog => {
         tog.remove();
     });

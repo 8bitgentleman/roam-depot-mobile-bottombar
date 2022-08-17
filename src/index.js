@@ -9,7 +9,10 @@ import {
     destroyButton,
   } from "./entry-helpers.js";
 
-  
+// store observers globally so they can be disconnected 
+var runners = {
+    observers: [],
+}
 const panelConfig = {
     tabTitle: "Test Ext 1",
     settings: [
@@ -36,20 +39,6 @@ const panelConfig = {
                   onChange: (evt) => { console.log("Select Changed!", evt); }}}
     ]
 };
-// the observer is const so it can be disconnected 
-// TODO how can I load this before everything else?
-// maybe it calls a function that's loaded with info after initialization?
-const observer = createObserver(() => {
-    if (
-        !document.getElementById(MOBILE_MORE_ICON_BUTTON_ID) &&
-        !document.getElementById(MOBILE_BACK_ICON_BUTTON_ID)
-    ) {
-        const mobileBar = document.getElementById("rm-mobile-bar");
-        if (mobileBar) {
-            mobileBar.appendChild(moreIconButton);
-        }
-    }
-    });
 
 const MOBILE_MORE_ICON_BUTTON_ID = "mobile-more-icon-button";
 const MOBILE_BACK_ICON_BUTTON_ID = "mobile-back-icon-button";
@@ -109,23 +98,28 @@ function onload({extensionAPI}) {
     }
     };
 
-    // createObserver(() => {
-    //     if (
-    //         !document.getElementById(MOBILE_MORE_ICON_BUTTON_ID) &&
-    //         !document.getElementById(MOBILE_BACK_ICON_BUTTON_ID)
-    //     ) {
-    //         const mobileBar = document.getElementById("rm-mobile-bar");
-    //         if (mobileBar) {
-    //             mobileBar.appendChild(moreIconButton);
-    //         }
-    //     }
-    //     });
-    console.log("load example plugin");
+    const bottombarObserver = createObserver(() => {
+        if (
+            !document.getElementById(MOBILE_MORE_ICON_BUTTON_ID) &&
+            !document.getElementById(MOBILE_BACK_ICON_BUTTON_ID)
+        ) {
+            const mobileBar = document.getElementById("rm-mobile-bar");
+            if (mobileBar) {
+                mobileBar.appendChild(moreIconButton);
+            }
+        }
+        });
+    // save observers globally so they can be disconnected later
+    runners['observers'] = [bottombarObserver]
+    console.log("load mobile bottombar plugin");
 }
 
 function onunload() {
-    console.log("unload telegroam plugin");
-    observer.disconnect()
+    // loop through observers and disconnect
+    for (let index = 0; index < runners['observers'].length; index++) {
+        const element = runners['observers'][index];
+        element.disconnect()
+    }
     // put back the normal bottombar
     if (document.getElementById(MOBILE_MORE_ICON_BUTTON_ID)) {
         destroyButton(MOBILE_MORE_ICON_BUTTON_ID)
@@ -134,8 +128,7 @@ function onunload() {
         Array.from(mobileBar.children).forEach((n) => mobileBar.removeChild(n));
         menuItems.forEach((n) => mobileBar.appendChild(n));
     }
-
-    
+    console.log("unload mobile bottombar plugin");
 }
   
 export default {
