@@ -231,11 +231,14 @@ function onunload() {
     }
     // put back the normal bottombar
     if (document.getElementById(MOBILE_MORE_ICON_BUTTON_ID)) {
+        // only the more button is showing
         destroyButton(MOBILE_MORE_ICON_BUTTON_ID)
     } else if (document.getElementById(MOBILE_BACK_ICON_BUTTON_ID)) {
         const mobileBar = document.getElementById("rm-mobile-bar");
         Array.from(mobileBar.children).forEach((n) => mobileBar.removeChild(n));
         runners['menuItems'].forEach((n) => mobileBar.appendChild(n));
+        // remove the MORE button just in case
+        destroyButton(MOBILE_MORE_ICON_BUTTON_ID)
     }
     console.log("unload mobile bottombar plugin");
 }
