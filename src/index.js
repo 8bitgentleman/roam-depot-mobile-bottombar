@@ -110,7 +110,7 @@ function onload({extensionAPI}) {
     // TODO switch to hosted image
     const smartblockImageButton = createMobileImage(
         MOBILE_SMARTBLOCK_ICON_BUTTON_ID,
-        'https://raw.githubusercontent.com/dvargas92495/roamjs-smartblocks/main/src/img/lego3blocks.png'
+        'https://raw.githubusercontent.com/8bitgentleman/roam-depot-mobile-bottombar/main/icon.png'
         );
     const boldIconButton = createMobileIcon(
         MOBILE_BOLD_ICON_BUTTON_ID,
