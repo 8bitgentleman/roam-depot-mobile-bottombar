@@ -38,7 +38,7 @@ let previousActiveElement;
 function onload({extensionAPI}) {
     const wrappedSmartblockConfig = () => SmartblockConfig({ extensionAPI });
     const panelConfig = {
-        tabTitle: "Mobile BottomBar Buttons",
+        tabTitle: "Custom Mobile Buttons",
         settings: [
             {id:     "open-close",
              name:        "Open Close Block Button",
