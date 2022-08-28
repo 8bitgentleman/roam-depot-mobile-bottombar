@@ -1,4 +1,4 @@
-// borrowed from roamjs-com
+// mostly borrowed from roamjs-com
 // https://github.com/dvargas92495/roamjs-com/blob/4901f3519fb9749ce5fb31cb0955906a43e80e2c/src/entry-helpers.ts
 
 export const createMobileIcon = (
