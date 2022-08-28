@@ -1,7 +1,8 @@
 // framework cribbed from mobile-todos by DVargas
 // https://github.com/dvargas92495/roamjs-com/blob/4901f3519fb9749ce5fb31cb0955906a43e80e2c/src/entries/mobile-todos.ts
 import createObserver from "roamjs-components/dom/createObserver";
-import getUids from "roamjs-components/dom/getUids"
+import getUids from "roamjs-components/dom/getUids";
+
 import {
     createMobileIcon,
     fixCursorById,
@@ -14,81 +15,14 @@ import {
     toggleBlockClose,
 } from "./button-helpers.js"
 
+import SmartblockConfig from "./components/smartblockConfig";
+
+
 // store observers globally so they can be disconnected 
 var runners = {
     menuItems: [],
     observers: [],
 }
-
-const panelConfig = {
-    tabTitle: "Mobile BottomBar Buttons",
-    settings: [
-        {id:          "open-close",
-         name:        "Open Close Block Button",
-         description: "Adds a button to toggle the selected block open/close",
-         action:      {type:     "switch",
-                       onChange: (evt) => { 
-                        console.log("Show Open Close Button", evt['target']['checked']);
-                        // toggle button on/off
-                        if (!evt['target']['checked']) {
-                            destroyButton(MOBILE_TOGGLE_ICON_BUTTON_ID)
-                        }
-                      }}},
-        {id:     "smartblock-workflow",
-        name:   "Input test",
-        description: "Adds a button to toggle a smartblock workflow. If nothing is entered a button will not be added",
-        action: {type:        "input",
-                placeholder: "none",
-                onChange:    (evt) => { 
-                  console.log("Smartblock Input Changed!", evt['target']['value']); 
-                  // check if value is empty
-                  let val = evt['target']['value'];
-  
-                  if (val.length === 0 || !val.trim()) {
-                    destroyButton('bottomSmartblockButton')
-                  }
-                }}},
-        {id:          "bold-button",
-        name:        "Bold Button",
-        description: "Adds a button to bold the selected text",
-        action:      {type:     "switch",
-                      onChange: (evt) => { 
-                        console.log("Show Bold Button", evt['target']['checked']);
-                        // toggle button on/off
-                        if (!evt['target']['checked']) {
-                          destroyButton(MOBILE_BOLD_ICON_BUTTON_ID)
-                        }
-                      }}},
-        {id:          "italic-button",
-        name:        "Italicize Button",
-        description: "Adds a button to italicize the selected text",
-        action:      {type:     "switch",
-                      onChange: (evt) => { 
-                        console.log("Show Bold Button", evt['target']['checked']);
-                        // toggle button on/off
-                        if (!evt['target']['checked']) {
-                          destroyButton(MOBILE_ITALIC_ICON_BUTTON_ID)
-                        }
-                      }}},
-          {id:          "highlight-button",
-          name:        "Highlight Button",
-          description: "Adds a button to highlight the selected text",
-          action:      {type:     "switch",
-                        onChange: (evt) => { 
-                          console.log("Show Bold Button", evt['target']['checked']);
-                          // toggle button on/off
-                          if (!evt['target']['checked']) {
-                            destroyButton(MOBILE_HIGHLIGHT_ICON_BUTTON_ID)
-                          }
-                        }}},
-        {id:     "button-order",
-         name:   "Button Locations",
-         description: "NOT WORKING:Where in the bottom bar to start adding the buttons",
-         action: {type:     "select",
-                  items:    ["Main Bar", "New Panel"],
-                  onChange: (evt) => { console.log("Select Changed!", evt); }}}
-    ]
-  };
 
 const MOBILE_MORE_ICON_BUTTON_ID = "mobile-more-icon-button";
 const MOBILE_BACK_ICON_BUTTON_ID = "mobile-back-icon-button";
@@ -101,6 +35,82 @@ const MOBILE_ITALIC_ICON_BUTTON_ID = "mobile-italic-icon-button";
 let previousActiveElement;
 
 function onload({extensionAPI}) {
+    const wrappedSmartblockConfig = () => SmartblockConfig({ extensionAPI });
+    const panelConfig = {
+        tabTitle: "Mobile BottomBar Buttons",
+        settings: [
+            {id:     "open-close",
+             name:        "Open Close Block Button",
+             description: "Adds a button to toggle the selected block open/close",
+             action:      {type:     "switch",
+                           onChange: (evt) => { 
+                            console.log("Show Open Close Button", evt['target']['checked']);
+                            // toggle button on/off
+                            if (!evt['target']['checked']) {
+                                destroyButton(MOBILE_TOGGLE_ICON_BUTTON_ID)
+                            }
+                          }}},
+            {
+              id: "smartblock-workflow",
+              name: "SmartBlock Workflow",
+              description:
+                  "Enable to add a button that will trigger given smartblock workflow",
+              action: {
+                  type: "reactComponent",
+                  component: wrappedSmartblockConfig,
+              },
+          },
+            // {id:     "daily",
+            // name:   "Input test",
+            // description: "Adds a button to toggle a smartblock workflow. If nothing is entered a button will not be added",
+            // action: {type:        "input",
+            //         placeholder: "none",
+            //         onChange:    (evt) => { 
+            //           console.log("Smartblock Input Changed!", evt['target']['value']); 
+            //           // check if value is empty
+            //           let val = evt['target']['value'];
+      
+            //           if (val.length === 0 || !val.trim()) {
+            //             destroyButton('bottomSmartblockButton')
+            //           }
+            //         }}},
+
+            {id:          "bold-button",
+            name:        "Bold Button",
+            description: "Adds a button to bold the selected text",
+            action:      {type:     "switch",
+                          onChange: (evt) => { 
+                            console.log("Show Bold Button", evt['target']['checked']);
+                            // toggle button on/off
+                            if (!evt['target']['checked']) {
+                              destroyButton(MOBILE_BOLD_ICON_BUTTON_ID)
+                            }
+                          }}},
+            {id:          "italic-button",
+            name:        "Italicize Button",
+            description: "Adds a button to italicize the selected text",
+            action:      {type:     "switch",
+                          onChange: (evt) => { 
+                            console.log("Show Bold Button", evt['target']['checked']);
+                            // toggle button on/off
+                            if (!evt['target']['checked']) {
+                              destroyButton(MOBILE_ITALIC_ICON_BUTTON_ID)
+                            }
+                          }}},
+            {id:          "highlight-button",
+              name:        "Highlight Button",
+              description: "Adds a button to highlight the selected text",
+              action:      {type:     "switch",
+                            onChange: (evt) => { 
+                              console.log("Show Bold Button", evt['target']['checked']);
+                              // toggle button on/off
+                              if (!evt['target']['checked']) {
+                                destroyButton(MOBILE_HIGHLIGHT_ICON_BUTTON_ID)
+                              }
+                            }}}
+            
+        ]
+      };
     extensionAPI.settings.panel.create(panelConfig);
 
     // create more button
@@ -166,7 +176,8 @@ function onload({extensionAPI}) {
                 formatdSelectedText('highlight');
             }
         }
-        if (extensionAPI.settings.get('smartblock-workflow') != undefined) {
+        if (extensionAPI.settings.get('smartblock-workflow')['workflow name'] != undefined) {
+          console.log(extensionAPI.settings.get('smartblock-workflow'))
             mobileBar.appendChild(smartblockImageButton);
             smartblockImageButton.onclick = () => {
                 runSmartblockWorkflow(extensionAPI);
@@ -214,6 +225,7 @@ function onload({extensionAPI}) {
         ) {
             const mobileBar = document.getElementById("rm-mobile-bar");
             if (mobileBar) {
+                console.log("append more", mobileBar, moreIconButton)
                 mobileBar.appendChild(moreIconButton);
             }
         }

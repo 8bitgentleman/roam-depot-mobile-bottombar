@@ -32,12 +32,13 @@ export const  formatdSelectedText = (style="bold") => {
 
 export const runSmartblockWorkflow = (extensionAPI) => {
     // trigger the workflow
-    let workflow = extensionAPI.settings.get('smartblock-workflow')
+    let workflow = extensionAPI.settings.get('smartblock-workflow');
+    console.log("runnning workflow", workflow['workflow name'])
     try {
         // run workflow on current block
         window.roamjs.extension.smartblocks.triggerSmartblock({
-        srcName: workflow,
-        targetUid: roamAlphaAPI.ui.getFocusedBlock()['block-uid']
+            srcName: workflow['workflow name'],
+            targetUid: roamAlphaAPI.ui.getFocusedBlock()['block-uid']
         });
     } catch (error) {
         // log error
