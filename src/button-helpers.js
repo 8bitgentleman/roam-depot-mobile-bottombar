@@ -1,6 +1,5 @@
 export const  formatdSelectedText = (style="bold") => {
     // grab the text selected by index and replace it with the markdown formatted text
-    console.log('next button', style)
     // replace text between two indexes
     String.prototype.replaceBetween = function(start, end, what) {
         return this.substring(0, start) + what + this.substring(end);
@@ -33,7 +32,6 @@ export const  formatdSelectedText = (style="bold") => {
 export const runSmartblockWorkflow = (extensionAPI) => {
     // trigger the workflow
     let workflow = extensionAPI.settings.get('smartblock-workflow');
-    console.log("runnning workflow", workflow['workflow name'])
     try {
         // run workflow on current block
         window.roamjs.extension.smartblocks.triggerSmartblock({

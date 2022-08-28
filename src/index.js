@@ -60,28 +60,11 @@ function onload({extensionAPI}) {
                   component: wrappedSmartblockConfig,
               },
           },
-            // {id:     "daily",
-            // name:   "Input test",
-            // description: "Adds a button to toggle a smartblock workflow. If nothing is entered a button will not be added",
-            // action: {type:        "input",
-            //         placeholder: "none",
-            //         onChange:    (evt) => { 
-            //           console.log("Smartblock Input Changed!", evt['target']['value']); 
-            //           // check if value is empty
-            //           let val = evt['target']['value'];
-      
-            //           if (val.length === 0 || !val.trim()) {
-            //             destroyButton('bottomSmartblockButton')
-            //           }
-            //         }}},
-
-            {id:          "bold-button",
+            {id:         "bold-button",
             name:        "Bold Button",
             description: "Adds a button to bold the selected text",
             action:      {type:     "switch",
                           onChange: (evt) => { 
-                            console.log("Show Bold Button", evt['target']['checked']);
-                            // toggle button on/off
                             if (!evt['target']['checked']) {
                               destroyButton(MOBILE_BOLD_ICON_BUTTON_ID)
                             }
@@ -91,7 +74,6 @@ function onload({extensionAPI}) {
             description: "Adds a button to italicize the selected text",
             action:      {type:     "switch",
                           onChange: (evt) => { 
-                            console.log("Show Bold Button", evt['target']['checked']);
                             // toggle button on/off
                             if (!evt['target']['checked']) {
                               destroyButton(MOBILE_ITALIC_ICON_BUTTON_ID)
@@ -102,7 +84,6 @@ function onload({extensionAPI}) {
               description: "Adds a button to highlight the selected text",
               action:      {type:     "switch",
                             onChange: (evt) => { 
-                              console.log("Show Bold Button", evt['target']['checked']);
                               // toggle button on/off
                               if (!evt['target']['checked']) {
                                 destroyButton(MOBILE_HIGHLIGHT_ICON_BUTTON_ID)
@@ -112,8 +93,6 @@ function onload({extensionAPI}) {
         ]
       };
     extensionAPI.settings.panel.create(panelConfig);
-
-    // create more button
 
     const moreIconButton = createMobileIcon(MOBILE_MORE_ICON_BUTTON_ID, "menu");
     const backIconButton = createMobileIcon(
@@ -225,7 +204,6 @@ function onload({extensionAPI}) {
         ) {
             const mobileBar = document.getElementById("rm-mobile-bar");
             if (mobileBar) {
-                console.log("append more", mobileBar, moreIconButton)
                 mobileBar.appendChild(moreIconButton);
             }
         }
