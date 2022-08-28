@@ -19,8 +19,6 @@ const SmartblockConfig = ({ extensionAPI }) => {
   const [workflowName, setWorkflowName] = useState(config?.["workflow name"]);
   const inputRef = useRef(null);
 
-  console.log(extensionAPI.settings.get("smartblock-workflow"), config, !config, disabled)
-
   useEffect(() => {
     inputRef.current.className = "rm-extensions-settings";
     inputRef.current.style.minWidth = "100%";
@@ -44,9 +42,8 @@ const SmartblockConfig = ({ extensionAPI }) => {
             });
             setDisabled(false);
           } else {
-            extensionAPI.settings.set("smartblock-workflow", {
-              "workflow name": undefined,
-            });
+            extensionAPI.settings.set("smartblock-workflow", undefined);
+            console.log("smartblock disabled")
             setDisabled(true);
             destroyButton('bottomSmartblockButton')
           }
@@ -63,19 +60,14 @@ const SmartblockConfig = ({ extensionAPI }) => {
             cursor: disabled ? 'not-allowed' : 'auto',
           }}
           onChange={(e) => {
-            // extensionAPI.settings.set("smartblock-workflow", {
-            //   ...(extensionAPI.settings.get("smartblock-workflow")),
-            //   "workflow name": e.target.value,
-            // });
             extensionAPI.settings.set("smartblock-workflow", {
               "workflow name": e.target.value,
             });
             setWorkflowName(e.target.value);
-            console.log(e.target.value, workflowName, extensionAPI.settings.get("smartblock-workflow"));
           }}
           inputRef={inputRef}
           disabled={disabled}
-          placeholder={"Daily"}
+          placeholder={extensionAPI.settings.get("smartblock-workflow")}
           className={"w-full"}
         />
       </Label>

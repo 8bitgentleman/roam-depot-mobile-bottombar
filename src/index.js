@@ -44,7 +44,6 @@ function onload({extensionAPI}) {
              description: "Adds a button to toggle the selected block open/close",
              action:      {type:     "switch",
                            onChange: (evt) => { 
-                            console.log("Show Open Close Button", evt['target']['checked']);
                             // toggle button on/off
                             if (!evt['target']['checked']) {
                                 destroyButton(MOBILE_TOGGLE_ICON_BUTTON_ID)
@@ -155,12 +154,15 @@ function onload({extensionAPI}) {
                 formatdSelectedText('highlight');
             }
         }
-        if (extensionAPI.settings.get('smartblock-workflow')['workflow name'] != undefined) {
-          console.log(extensionAPI.settings.get('smartblock-workflow'))
-            mobileBar.appendChild(smartblockImageButton);
-            smartblockImageButton.onclick = () => {
-                runSmartblockWorkflow(extensionAPI);
+        if (extensionAPI.settings.get('smartblock-workflow')) {
+            if (['workflow name'] != undefined) {
+                //   console.log(extensionAPI.settings.get('smartblock-workflow'))
+                mobileBar.appendChild(smartblockImageButton);
+                smartblockImageButton.onclick = () => {
+                    runSmartblockWorkflow(extensionAPI);
+                }
             }
+        
           } 
         // always append the back button
         mobileBar.appendChild(backIconButton);
