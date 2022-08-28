@@ -1,14 +1,10 @@
 import { InputGroup, Switch, Label } from "@blueprintjs/core";
 import { useMemo, useState, useRef, useEffect } from 'react';
 import {
-  createMobileIcon,
-  fixCursorById,
-  createMobileImage,
   destroyButton,
 } from "../entry-helpers.js";
 
 const SmartblockConfig = ({ extensionAPI }) => {
-  // Declare a new state variable, which we'll call "count"
   const config = useMemo(
     () =>
       extensionAPI.settings.get("smartblock-workflow"),
@@ -26,6 +22,8 @@ const SmartblockConfig = ({ extensionAPI }) => {
   }, [inputRef]);
   return (
     <div
+    // not happy with this styling, sometimes causes the Roam Depot settings page
+    // to horizontally scroll and I'm not sure whys
       className="flex items-start gap-2 flex-col"
       style={{
         width: "100%",
@@ -34,16 +32,16 @@ const SmartblockConfig = ({ extensionAPI }) => {
     >
       <Switch
         defaultChecked={!disabled}
-
         onChange={(e) => {
           if (e.target.checked) {
+            // enable and set the smartblock button
             extensionAPI.settings.set("smartblock-workflow", {
               "workflow name": workflowName,
             });
             setDisabled(false);
           } else {
+            // clear and remove the smartblock button
             extensionAPI.settings.set("smartblock-workflow", undefined);
-            console.log("smartblock disabled")
             setDisabled(true);
             destroyButton('bottomSmartblockButton')
           }
@@ -60,6 +58,8 @@ const SmartblockConfig = ({ extensionAPI }) => {
             cursor: disabled ? 'not-allowed' : 'auto',
           }}
           onChange={(e) => {
+            // update the workflow 
+            // this should probably be async? no issues so far 
             extensionAPI.settings.set("smartblock-workflow", {
               "workflow name": e.target.value,
             });

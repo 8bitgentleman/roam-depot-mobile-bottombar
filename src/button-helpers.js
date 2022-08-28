@@ -30,7 +30,7 @@ export const  formatdSelectedText = (style="bold") => {
   }
 
 export const runSmartblockWorkflow = (extensionAPI) => {
-    // trigger the workflow
+    // trigger the smartblock workflow
     let workflow = extensionAPI.settings.get('smartblock-workflow');
     try {
         // run workflow on current block

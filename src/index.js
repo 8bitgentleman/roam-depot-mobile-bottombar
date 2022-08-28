@@ -1,5 +1,6 @@
+// code by Matt Vogel
 // framework cribbed from mobile-todos by DVargas
-// https://github.com/dvargas92495/roamjs-com/blob/4901f3519fb9749ce5fb31cb0955906a43e80e2c/src/entries/mobile-todos.ts
+
 import createObserver from "roamjs-components/dom/createObserver";
 import getUids from "roamjs-components/dom/getUids";
 
@@ -37,7 +38,7 @@ let previousActiveElement;
 function onload({extensionAPI}) {
     const wrappedSmartblockConfig = () => SmartblockConfig({ extensionAPI });
     const panelConfig = {
-        tabTitle: "Mobile BottomBar Buttons",
+        tabTitle: "Custom Mobile Buttons",
         settings: [
             {id:     "open-close",
              name:        "Open Close Block Button",
@@ -98,19 +99,14 @@ function onload({extensionAPI}) {
         MOBILE_BACK_ICON_BUTTON_ID,
         "arrow-left"
         );
-    const todoIconButton = createMobileIcon(
-        "mobile-todo-icon-button",
-        "check-square"
-        );
-    
+
     const toggleIconButton = createMobileIcon(
         MOBILE_TOGGLE_ICON_BUTTON_ID,
         "arrows-vertical"
         );
-    // TODO switch to hosted image
     const smartblockImageButton = createMobileImage(
         MOBILE_SMARTBLOCK_ICON_BUTTON_ID,
-        'https://raw.githubusercontent.com/dvargas92495/roamjs-smartblocks/main/src/img/lego3blocks.png'
+        'https://raw.githubusercontent.com/8bitgentleman/roam-depot-mobile-bottombar/main/icon.png'
         );
     const boldIconButton = createMobileIcon(
         MOBILE_BOLD_ICON_BUTTON_ID,
@@ -127,9 +123,11 @@ function onload({extensionAPI}) {
 
     moreIconButton.onclick = () => {
         const mobileBar = document.getElementById("rm-mobile-bar");
+        // save the existing bottom bar so it can be replaced later
         runners['menuItems'] = Array.from(mobileBar.children);
         Array.from(mobileBar.children).forEach((n) => mobileBar.removeChild(n));
-        // only append buttons as needed
+        // only append new buttons as needed
+        // this has the downside of only loading new buttons on menu 'refresh'
         if (extensionAPI.settings.get('open-close')) {
             mobileBar.appendChild(toggleIconButton);
             toggleIconButton.onclick = () => {
@@ -156,7 +154,6 @@ function onload({extensionAPI}) {
         }
         if (extensionAPI.settings.get('smartblock-workflow')) {
             if (['workflow name'] != undefined) {
-                //   console.log(extensionAPI.settings.get('smartblock-workflow'))
                 mobileBar.appendChild(smartblockImageButton);
                 smartblockImageButton.onclick = () => {
                     runSmartblockWorkflow(extensionAPI);
@@ -178,26 +175,6 @@ function onload({extensionAPI}) {
         //   previousActiveElement.focus();
         // }
     };
-    todoIconButton.onclick = () => {
-    if (previousActiveElement.tagName === "TEXTAREA") {
-        const textArea = previousActiveElement;
-        const start = textArea.selectionStart;
-        const end = textArea.selectionEnd;
-        const oldValue = textArea.value;
-        const newValue = TODO_REGEX.test(oldValue)
-        ? oldValue.replace(TODO_REGEX, "{{[[DONE]]}}")
-        : DONE_REGEX.test(oldValue)
-        ? oldValue.replace(DONE_REGEX, "")
-        : `{{[[TODO]]}} ${oldValue}`;
-        const diff = newValue.length - oldValue.length;
-        const { blockUid } = getUids(textArea);
-        window.roamAlphaAPI.updateBlock({
-        block: { uid: blockUid, string: newValue },
-        });
-        fixCursorById({ id: textArea.id, start: start + diff, end: end + diff });
-    }
-    };
-    
 
     const bottombarObserver = createObserver(() => {
         if (
