@@ -1,3 +1,5 @@
+import createTagRegex from "roamjs-components/util/createTagRegex";
+
 export const  formatdSelectedText = (style="bold") => {
     // grab the text selected by index and replace it with the markdown formatted text
     // replace text between two indexes
@@ -62,3 +64,17 @@ export const toggleBlockClose = () => {
       }
       
   };
+
+export const getCustomWorkflows = () =>
+  window.roamAlphaAPI
+    .q(
+      `[:find ?s :where [?r :block/string ?s] [?r :block/refs ?p] (or [?p :node/title "SmartBlock"] [?p :node/title "42SmartBlock"])]`
+    )
+    .map((text) => (
+      text[0]
+        .replace(createTagRegex("SmartBlock"), "")
+        .replace(createTagRegex("42SmartBlock"), "")
+        .replace(/<%[A-Z]+%>/, "")
+        .trim()
+    ));
+

@@ -2,7 +2,6 @@
 // framework cribbed from mobile-todos by DVargas
 
 import createObserver from "roamjs-components/dom/createObserver";
-import getUids from "roamjs-components/dom/getUids";
 
 import {
     createMobileIcon,
@@ -14,6 +13,7 @@ import {
     formatdSelectedText,
     runSmartblockWorkflow,
     toggleBlockClose,
+    getCustomWorkflows,
 } from "./button-helpers.js"
 
 import SmartblockConfig from "./components/smartblockConfig";
@@ -36,10 +36,16 @@ const MOBILE_ITALIC_ICON_BUTTON_ID = "mobile-italic-icon-button";
 let previousActiveElement;
 
 function onload({extensionAPI}) {
+    let wf = getCustomWorkflows().sort((a, b) =>
+    a.localeCompare(b))
+    // // .map((w) => w.name)
+    wf.unshift("None")
+    console.log(wf)
+
     const wrappedSmartblockConfig = () => SmartblockConfig({ extensionAPI });
     const panelConfig = {
         tabTitle: "Custom Mobile Buttons",
-        settings: [
+        settings: [s
             {id:     "open-close",
              name:        "Open Close Block Button",
              description: "Adds a button to toggle the selected block open/close",
