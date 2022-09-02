@@ -14,6 +14,7 @@ import {
     formatdSelectedText,
     runSmartblockWorkflow,
     toggleBlockClose,
+    deleteBlock,
 } from "./button-helpers.js"
 
 import SmartblockConfig from "./components/smartblockConfig";
@@ -32,6 +33,7 @@ const MOBILE_SMARTBLOCK_ICON_BUTTON_ID = "mobile-smartblock-button"
 const MOBILE_BOLD_ICON_BUTTON_ID = "mobile-bold-icon-button";
 const MOBILE_HIGHLIGHT_ICON_BUTTON_ID = "mobile-highlight-icon-button";
 const MOBILE_ITALIC_ICON_BUTTON_ID = "mobile-italic-icon-button";
+const MOBILE_DELETE_ICON_BUTTON_ID = "mobile-delete-icon-button";
 
 let previousActiveElement;
 
@@ -88,6 +90,16 @@ function onload({extensionAPI}) {
                               if (!evt['target']['checked']) {
                                 destroyButton(MOBILE_HIGHLIGHT_ICON_BUTTON_ID)
                               }
+                            }}},
+            {id:          "delete-block-button",
+                name:        "Delete Block Button",
+                description: "Adds a button to delete a block and it's children",
+                action:      {type:     "switch",
+                            onChange: (evt) => { 
+                                // toggle button on/off
+                                if (!evt['target']['checked']) {
+                                    destroyButton(MOBILE_DELETE_ICON_BUTTON_ID)
+                                }
                             }}}
             
         ]
@@ -120,6 +132,10 @@ function onload({extensionAPI}) {
         MOBILE_ITALIC_ICON_BUTTON_ID,
         "italic"
         );
+    const deleteIconButton = createMobileIcon(
+        MOBILE_ITALIC_ICON_BUTTON_ID,
+        "delete"
+        );
 
     moreIconButton.onclick = () => {
         const mobileBar = document.getElementById("rm-mobile-bar");
@@ -150,6 +166,12 @@ function onload({extensionAPI}) {
             mobileBar.appendChild(highlightIconButton);
             highlightIconButton.onclick = () => {
                 formatdSelectedText('highlight');
+            }
+        }
+        if (extensionAPI.settings.get('delete-block-button')) {
+            mobileBar.appendChild(deleteIconButton);
+            deleteIconButton.onclick = () => {
+                deleteBlock()
             }
         }
         if (extensionAPI.settings.get('smartblock-workflow')) {
