@@ -9,6 +9,7 @@ import {
     fixCursorById,
     createMobileImage,
     destroyButton,
+    headingOptions,
   } from "./entry-helpers.js";
 import {
     formatdSelectedText,
@@ -34,6 +35,7 @@ const MOBILE_BOLD_ICON_BUTTON_ID = "mobile-bold-icon-button";
 const MOBILE_HIGHLIGHT_ICON_BUTTON_ID = "mobile-highlight-icon-button";
 const MOBILE_ITALIC_ICON_BUTTON_ID = "mobile-italic-icon-button";
 const MOBILE_DELETE_ICON_BUTTON_ID = "mobile-delete-icon-button";
+const MOBILE_HEADING_ICON_BUTTON_ID = "mobile-heading-icon-button";
 
 let previousActiveElement;
 
@@ -100,6 +102,16 @@ function onload({extensionAPI}) {
                                 if (!evt['target']['checked']) {
                                     destroyButton(MOBILE_DELETE_ICON_BUTTON_ID)
                                 }
+                            }}},
+            {id:          "heading-button",
+                name:        "Heading Format Button",
+                description: "Adds a button to set a block's heading size",
+                action:      {type:     "switch",
+                            onChange: (evt) => { 
+                                // toggle button on/off
+                                if (!evt['target']['checked']) {
+                                    destroyButton(MOBILE_HEADING_ICON_BUTTON_ID)
+                                }
                             }}}
             
         ]
@@ -135,6 +147,9 @@ function onload({extensionAPI}) {
     const deleteIconButton = createMobileIcon(
         MOBILE_ITALIC_ICON_BUTTON_ID,
         "delete"
+        );
+    const headingIconButton = headingOptions(
+        "h1"
         );
 
     moreIconButton.onclick = () => {
@@ -173,6 +188,12 @@ function onload({extensionAPI}) {
             deleteIconButton.onclick = () => {
                 deleteBlock()
             }
+        }
+        if (extensionAPI.settings.get('heading-button')) {
+            mobileBar.appendChild(headingIconButton);
+            // headingIconButton.onclick = () => {
+            //     headingOptions()
+            // }
         }
         if (extensionAPI.settings.get('smartblock-workflow')) {
             if (['workflow name'] != undefined) {

@@ -1,6 +1,12 @@
 // mostly borrowed from roamjs-com
 // https://github.com/dvargas92495/roamjs-com/blob/4901f3519fb9749ce5fb31cb0955906a43e80e2c/src/entry-helpers.ts
-
+import {
+    Button,
+    Icon,
+    Menu,
+    MenuItem,
+    Popover2,
+  } from "@blueprintjs/core";
 export const createMobileIcon = (
     id,
     iconType
@@ -63,4 +69,65 @@ export const destroyButton = (id) => {
     button.forEach(tog => {
         tog.remove();
     });
+}
+
+export const headingOptions = (heading) => {
+    return (
+          <Popover2
+            interactionKind="click"
+            // onClosed={reFocus}
+            content={
+              <>
+                <Menu>
+                  <MenuItem
+                    icon="paragraph"
+                    text="text"
+                    // intent={isIntent(isPlain())}
+                    onClick={() => {
+                    //   toPlain();
+                    }}
+                    // active={isPlain()}
+                  />
+                  <MenuItem
+                    icon="header-one"
+                    text={"H1"}
+                    onClick={() => {
+                    //   headering(1);
+                    }}
+                    // active={isHeading(1)}
+                  />
+                  <MenuItem
+                    icon="header-two"
+                    text={"H2"}
+                    // active={isHeading(2)}
+                    onClick={() => {
+                    //   headering(2);
+                    }}
+                  />
+                  <MenuItem
+                    // active={isHeading(3)}
+                    icon="header-three"
+                    text="H3"
+                    // onClick={() => headering(3)}
+                  />
+                  <MenuItem
+                    // active={isQuotation()}
+                    icon="citation"
+                    text="Quote"
+                    // onClick={() => quotation()}
+                  />
+                </Menu>
+              </>
+            }
+          >
+            <Button
+              icon={
+                "header-one"
+              }
+            >
+              <Icon icon="chevron-down" size={14} style={{ color: "grey" }} />
+            </Button>
+          </Popover2>
+      );
+
 }
