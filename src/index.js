@@ -14,6 +14,7 @@ import {
     formatdSelectedText,
     runSmartblockWorkflow,
     toggleBlockClose,
+    toggleCommandPalette,
 } from "./button-helpers.js"
 
 import SmartblockConfig from "./components/smartblockConfig";
@@ -32,6 +33,7 @@ const MOBILE_SMARTBLOCK_ICON_BUTTON_ID = "mobile-smartblock-button"
 const MOBILE_BOLD_ICON_BUTTON_ID = "mobile-bold-icon-button";
 const MOBILE_HIGHLIGHT_ICON_BUTTON_ID = "mobile-highlight-icon-button";
 const MOBILE_ITALIC_ICON_BUTTON_ID = "mobile-italic-icon-button";
+const MOBILE_COMMAND_PALETTE_ICON_BUTTON_ID = "mobile-command-icon-button";
 
 let previousActiveElement;
 
@@ -88,6 +90,16 @@ function onload({extensionAPI}) {
                               if (!evt['target']['checked']) {
                                 destroyButton(MOBILE_HIGHLIGHT_ICON_BUTTON_ID)
                               }
+                            }}},
+            {id:          "command-palette-button",
+                name:        "Open Command Pallette Button",
+                description: "Adds a button to open the command palette",
+                action:      {type:     "switch",
+                            onChange: (evt) => { 
+                                // toggle button on/off
+                                if (!evt['target']['checked']) {
+                                destroyButton(MOBILE_COMMAND_PALETTE_ICON_BUTTON_ID)
+                                }
                             }}}
             
         ]
@@ -120,7 +132,11 @@ function onload({extensionAPI}) {
         MOBILE_ITALIC_ICON_BUTTON_ID,
         "italic"
         );
-
+    const commandPaletteIconButton = createMobileIcon(
+        MOBILE_COMMAND_PALETTE_ICON_BUTTON_ID,
+        "applications"
+        );
+    
     moreIconButton.onclick = () => {
         const mobileBar = document.getElementById("rm-mobile-bar");
         // save the existing bottom bar so it can be replaced later
@@ -159,8 +175,14 @@ function onload({extensionAPI}) {
                     runSmartblockWorkflow(extensionAPI);
                 }
             }
-        
           } 
+          if (extensionAPI.settings.get('command-palette-button')) {
+            mobileBar.appendChild(commandPaletteIconButton);
+            commandPaletteIconButton.onclick = () => {
+                toggleCommandPalette();
+            }
+        }
+        
         // always append the back button
         mobileBar.appendChild(backIconButton);
         // if (previousActiveElement.tagName === "TEXTAREA") {
