@@ -32,6 +32,7 @@ const MOBILE_SMARTBLOCK_ICON_BUTTON_ID = "mobile-smartblock-button"
 const MOBILE_BOLD_ICON_BUTTON_ID = "mobile-bold-icon-button";
 const MOBILE_HIGHLIGHT_ICON_BUTTON_ID = "mobile-highlight-icon-button";
 const MOBILE_ITALIC_ICON_BUTTON_ID = "mobile-italic-icon-button";
+const MOBILE_ALIAS_ICON_BUTTON_ID = "mobile-alias-icon-button";
 
 let previousActiveElement;
 
@@ -88,6 +89,16 @@ function onload({extensionAPI}) {
                               if (!evt['target']['checked']) {
                                 destroyButton(MOBILE_HIGHLIGHT_ICON_BUTTON_ID)
                               }
+                            }}},
+            {id:          "alias-button",
+                name:        "Alias Button",
+                description: "Adds a button to turn the selected text into an alias []()",
+                action:      {type:     "switch",
+                            onChange: (evt) => { 
+                                // toggle button on/off
+                                if (!evt['target']['checked']) {
+                                destroyButton(MOBILE_ALIAS_ICON_BUTTON_ID)
+                                }
                             }}}
             
         ]
@@ -119,6 +130,10 @@ function onload({extensionAPI}) {
     const italicIconButton = createMobileIcon(
         MOBILE_ITALIC_ICON_BUTTON_ID,
         "italic"
+        );
+    const aliasIconButton = createMobileIcon(
+        MOBILE_ALIAS_ICON_BUTTON_ID,
+        "link"
         );
 
     moreIconButton.onclick = () => {
