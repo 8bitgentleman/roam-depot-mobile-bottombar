@@ -65,3 +65,59 @@ export const toggleBlockClose = () => {
       }
       
   };
+
+export const aliasSelection = () => {
+    var textArea = document.querySelectorAll("textarea")[0]
+
+    function getSelectedTextInTextarea(textarea) {
+        // Get the start and end indexes of the selected text
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        // Get the selected text
+        var selectedText = textarea.value.substring(start, end);
+        return selectedText;
+    }
+        var selectedText = getSelectedTextInTextarea(textArea)
+
+        function replaceSelectedTextInTextarea(textarea, newText) {
+        // Get the start and end indexes of the selected text
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        aliasText = "[" + newText + "]()"
+        // Replace the selected text with the new text
+        textarea.value = textarea.value.substring(0, start) + aliasText + textarea.value.substring(end);
+        // Set the cursor position after the replaced text
+        textarea.setSelectionRange(start + aliasText.length, start + aliasText.length - 1);
+    }
+
+    return replaceSelectedTextInTextarea(textArea ,selectedText)
+}
+
+export const softReturn = () => {
+    var textArea = document.querySelectorAll("textarea")[0]
+  
+    function getCaretLocation(textarea) {
+        // Get the end indexes of the selected text
+        var end = textarea.selectionEnd;
+        // Get the selected text
+        var value = textarea.value;
+        return [value,end];
+    }
+    
+    function insertSoftReturn(textarea, text,pos) {
+        // get the current text
+    
+        // insert a soft return character at the given position
+        var newText = text.substring(0, pos) + "\n" + text.substring(pos);
+    
+        // update the text with the soft return
+        roamAlphaAPI.updateBlock({"block": 
+                {"uid": "iytgVziyf",
+                "string": newText}})
+
+    }
+    
+    let caret = getCaretLocation(textArea)
+    
+    insertSoftReturn(textArea, caret[0], caret[1])
+}
