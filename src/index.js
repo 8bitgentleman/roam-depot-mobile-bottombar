@@ -18,7 +18,7 @@ import {
 } from "./button-helpers.js"
 
 import SmartblockConfig from "./components/smartblockConfig";
-
+import HotKeyPanel from "./components/HotKeyPanel";
 
 // store observers globally so they can be disconnected 
 var runners = {
@@ -100,7 +100,18 @@ function onload({extensionAPI}) {
                                 if (!evt['target']['checked']) {
                                 destroyButton(MOBILE_COMMAND_PALETTE_ICON_BUTTON_ID)
                                 }
-                            }}}
+                            }}},
+            {
+
+              id: "custom-hotkey",
+              name: "Custom Hotkey",
+              description:
+                  "Enable to add a button that will trigger a hotkey shortcut of your choice",
+              action: {
+                  type: "reactComponent",
+                  component: HotKeyPanel(extensionAPI),
+              },
+            }
             
         ]
       };
