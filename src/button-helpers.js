@@ -62,3 +62,21 @@ export const toggleBlockClose = () => {
       }
       
   };
+
+export const toggleCommandPalette = () => {  
+    const convertShortcut = () => {
+        return new KeyboardEvent("keydown", {
+          metaKey: true,
+          key: "p",
+          code: "KeyP",
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+          keyCode: 80,
+        });
+      };
+      
+      const evt = convertShortcut();
+      document.activeElement.dispatchEvent(evt);
+    
+};
