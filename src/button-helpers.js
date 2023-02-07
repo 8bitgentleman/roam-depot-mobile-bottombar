@@ -93,3 +93,14 @@ export const triggerBlockMenu = () => {
 
     bullet.dispatchEvent(event);
 }
+
+export const getBlockRef = () => {
+    let uid =  `((${roamAlphaAPI.ui.getFocusedBlock()['block-uid']}))`;
+
+    navigator.clipboard.writeText(uid).then(function() {
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
+
+    
+}  
