@@ -1,4 +1,4 @@
-export const  formatdSelectedText = (style="bold") => {
+export const formatdSelectedText = (style="bold") => {
     // grab the text selected by index and replace it with the markdown formatted text
     // replace text between two indexes
     String.prototype.replaceBetween = function(start, end, what) {
@@ -80,3 +80,16 @@ export const toggleCommandPalette = () => {
       document.activeElement.dispatchEvent(evt);
     
 };
+
+export const triggerBlockMenu = () => {
+    // if the cursor is in a block text area get the whole block
+    let block = document.querySelectorAll("textarea")[0].parentNode.parentElement;
+    let bullet = block.getElementsByClassName("rm-bullet")[0];
+    var event = new MouseEvent('contextmenu', {
+        'view': window,
+        'bubbles': true,
+        'cancelable': true
+    });
+
+    bullet.dispatchEvent(event);
+}
