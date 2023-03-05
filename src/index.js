@@ -18,7 +18,7 @@ import {
 } from "./button-helpers.js"
 
 import SmartblockConfig from "./components/smartblockConfig";
-
+import HotKeyPanel from "./components/HotKeyPanel";
 
 // store observers globally so they can be disconnected 
 var runners = {
@@ -39,6 +39,7 @@ let previousActiveElement;
 
 function onload({extensionAPI}) {
     const wrappedSmartblockConfig = () => SmartblockConfig({ extensionAPI });
+    const wrappedHotKeyPanel = () => HotKeyPanel({ extensionAPI });
     const panelConfig = {
         tabTitle: "Custom Mobile Buttons",
         settings: [
@@ -92,7 +93,7 @@ function onload({extensionAPI}) {
                               }
                             }}},
             {id:          "command-palette-button",
-                name:        "Open Command Pallette Button",
+                name:        "Open Command Palette Button",
                 description: "Adds a button to open the command palette",
                 action:      {type:     "switch",
                             onChange: (evt) => { 
@@ -100,7 +101,17 @@ function onload({extensionAPI}) {
                                 if (!evt['target']['checked']) {
                                 destroyButton(MOBILE_COMMAND_PALETTE_ICON_BUTTON_ID)
                                 }
-                            }}}
+                            }}},
+            {
+                id: "hot-keys",
+                name: "Hot Key Button",
+                description:
+                    "Adds a button that will trigger a custom hotkey",
+                action: {
+                    type: "reactComponent",
+                    component: wrappedHotKeyPanel,
+                },
+                },
             
         ]
       };
