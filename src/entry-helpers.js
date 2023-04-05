@@ -22,6 +22,28 @@ export const createMobileIcon = (
     return iconButton;
 };
 
+export const createMobileTextButton = (
+    id,
+    text
+) => {
+    const iconButton = document.createElement("button");
+    iconButton.id = id;
+    iconButton.className =
+        "bp3-button bp3-minimal rm-mobile-button dont-unfocus-block";
+    iconButton.style.padding = "6px 4px 4px;";
+    const icon = document.createElement("strong");
+    // icon.className = `bp3-icon bp3-icon-${iconType}`;
+    icon.innerText=text;
+    icon.style.cursor = "pointer";
+    icon.style.color = "rgb(92, 112, 128)";
+    icon.style.fontSize = "15px";
+    // icon.style.transform = "scale(1.2)";
+    // icon.style.fontWeight = "1.8";
+    // icon.style.margin = "8px 4px";
+    iconButton.appendChild(icon);
+    return iconButton;
+};
+
 export const createMobileImage = (
     id,
     imageURL

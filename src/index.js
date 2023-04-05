@@ -9,6 +9,7 @@ import {
     fixCursorById,
     createMobileImage,
     destroyButton,
+    createMobileTextButton,
   } from "./entry-helpers.js";
 import {
     formatdSelectedText,
@@ -178,9 +179,9 @@ function onload({extensionAPI}) {
         MOBILE_BLOCK_REF_ICON_BUTTON_ID,
         "asterisk"
         );
-    const curlyBracketsIconButton = createMobileIcon(
+    const curlyBracketsIconButton = createMobileTextButton(
         MOBILE_CURLY_BRACKETS_ICON_BUTTON_ID,
-        "slash"
+        "{{"
         );
 
     moreIconButton.onclick = () => {
