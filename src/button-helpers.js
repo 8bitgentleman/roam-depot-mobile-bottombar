@@ -66,6 +66,13 @@ export const toggleBlockClose = () => {
       
   };
 
+  export const deleteBlock = () => {
+    let uid = roamAlphaAPI.ui.getFocusedBlock()['block-uid'];
+    window
+    .roamAlphaAPI
+    .deleteBlock({"block": 
+                    {"uid": uid}})}
+
 export const toggleCommandPalette = () => {  
     const convertShortcut = () => {
         return new KeyboardEvent("keydown", {

@@ -18,6 +18,7 @@ import {
     toggleCommandPalette,
     triggerBlockMenu,
     getBlockRef,
+    deleteBlock,
 } from "./button-helpers.js"
 
 import SmartblockConfig from "./components/smartblockConfig";
@@ -36,6 +37,7 @@ const MOBILE_SMARTBLOCK_ICON_BUTTON_ID = "mobile-smartblock-button"
 const MOBILE_BOLD_ICON_BUTTON_ID = "mobile-bold-icon-button";
 const MOBILE_HIGHLIGHT_ICON_BUTTON_ID = "mobile-highlight-icon-button";
 const MOBILE_ITALIC_ICON_BUTTON_ID = "mobile-italic-icon-button";
+const MOBILE_DELETE_ICON_BUTTON_ID = "mobile-delete-icon-button";
 const MOBILE_COMMAND_PALETTE_ICON_BUTTON_ID = "mobile-command-icon-button";
 const MOBILE_BLOCK_MENU_ICON_BUTTON_ID = "mobile-block-menu-icon-button";
 const MOBILE_BLOCK_REF_ICON_BUTTON_ID = "mobile-block-ref-icon-button";
@@ -96,6 +98,16 @@ function onload({extensionAPI}) {
                                 destroyButton(MOBILE_HIGHLIGHT_ICON_BUTTON_ID)
                               }
                             }}},
+            {id:          "delete-block-button",
+            name:        "Delete Block Button",
+            description: "Adds a button to delete a block and it's children",
+            action:      {type:     "switch",
+                        onChange: (evt) => { 
+                            // toggle button on/off
+                            if (!evt['target']['checked']) {
+                                destroyButton(MOBILE_DELETE_ICON_BUTTON_ID)
+                            }
+                        }}},
             {id:          "curly-brackets-button",
                 name:        "Curly Bracket Button",
                 description: "Adds a button to add curly brackets the selected text",
@@ -167,6 +179,9 @@ function onload({extensionAPI}) {
         MOBILE_ITALIC_ICON_BUTTON_ID,
         "italic"
         );
+    const deleteIconButton = createMobileIcon(
+        MOBILE_DELETE_ICON_BUTTON_ID,
+        "delete")
     const commandPaletteIconButton = createMobileIcon(
         MOBILE_COMMAND_PALETTE_ICON_BUTTON_ID,
         "applications"
@@ -223,6 +238,12 @@ function onload({extensionAPI}) {
                 }
             }
         } 
+        if (extensionAPI.settings.get('delete-block-button')) {
+            mobileBar.appendChild(deleteIconButton);
+            deleteIconButton.onclick = () => {
+                deleteBlock()
+            }
+        }
         if (extensionAPI.settings.get('command-palette-button')) {
             mobileBar.appendChild(commandPaletteIconButton);
             commandPaletteIconButton.onclick = () => {
