@@ -15,6 +15,8 @@ import {
     runSmartblockWorkflow,
     toggleBlockClose,
     toggleCommandPalette,
+    triggerBlockMenu,
+    getBlockRef,
 } from "./button-helpers.js"
 
 import SmartblockConfig from "./components/smartblockConfig";
@@ -34,7 +36,9 @@ const MOBILE_BOLD_ICON_BUTTON_ID = "mobile-bold-icon-button";
 const MOBILE_HIGHLIGHT_ICON_BUTTON_ID = "mobile-highlight-icon-button";
 const MOBILE_ITALIC_ICON_BUTTON_ID = "mobile-italic-icon-button";
 const MOBILE_COMMAND_PALETTE_ICON_BUTTON_ID = "mobile-command-icon-button";
-
+const MOBILE_BLOCK_MENU_ICON_BUTTON_ID = "mobile-block-menu-icon-button";
+const MOBILE_BLOCK_REF_ICON_BUTTON_ID = "mobile-block-ref-icon-button";
+const MOBILE_CURLY_BRACKETS_ICON_BUTTON_ID = "mobile-curly-brackets-icon-button";
 let previousActiveElement;
 
 function onload({extensionAPI}) {
@@ -91,6 +95,16 @@ function onload({extensionAPI}) {
                                 destroyButton(MOBILE_HIGHLIGHT_ICON_BUTTON_ID)
                               }
                             }}},
+            {id:          "curly-brackets-button",
+                name:        "Curly Bracket Button",
+                description: "Adds a button to add curly brackets the selected text",
+                action:      {type:     "switch",
+                            onChange: (evt) => { 
+                                // toggle button on/off
+                                if (!evt['target']['checked']) {
+                                destroyButton(MOBILE_CURLY_BRACKETS_ICON_BUTTON_ID)
+                                }
+                            }}},
             {id:          "command-palette-button",
                 name:        "Open Command Pallette Button",
                 description: "Adds a button to open the command palette",
@@ -98,7 +112,27 @@ function onload({extensionAPI}) {
                             onChange: (evt) => { 
                                 // toggle button on/off
                                 if (!evt['target']['checked']) {
-                                destroyButton(MOBILE_COMMAND_PALETTE_ICON_BUTTON_ID)
+                                    destroyButton(MOBILE_COMMAND_PALETTE_ICON_BUTTON_ID)
+                                }
+                            }}},
+            {id:          "block-menu-button",
+                name:        "Open Block Context Menu Button",
+                description: "Adds a button to open the context menu for the current block",
+                action:      {type:     "switch",
+                            onChange: (evt) => { 
+                                // toggle button on/off
+                                if (!evt['target']['checked']) {
+                                    destroyButton(MOBILE_BLOCK_MENU_ICON_BUTTON_ID)
+                                }
+                            }}},
+            {id:          "block-ref-button",
+                name:        "Copy Block Ref",
+                description: "Copies the block ref of the current selected block to the clipboard",
+                action:      {type:     "switch",
+                            onChange: (evt) => { 
+                                // toggle button on/off
+                                if (!evt['target']['checked']) {
+                                    destroyButton(MOBILE_BLOCK_REF_ICON_BUTTON_ID)
                                 }
                             }}}
             
@@ -136,7 +170,19 @@ function onload({extensionAPI}) {
         MOBILE_COMMAND_PALETTE_ICON_BUTTON_ID,
         "applications"
         );
-    
+    const blockMenuIconButton = createMobileIcon(
+        MOBILE_BLOCK_MENU_ICON_BUTTON_ID,
+        "widget-button"
+        );
+    const blockRefIconButton = createMobileIcon(
+        MOBILE_BLOCK_REF_ICON_BUTTON_ID,
+        "asterisk"
+        );
+    const curlyBracketsIconButton = createMobileIcon(
+        MOBILE_CURLY_BRACKETS_ICON_BUTTON_ID,
+        "slash"
+        );
+
     moreIconButton.onclick = () => {
         const mobileBar = document.getElementById("rm-mobile-bar");
         // save the existing bottom bar so it can be replaced later
@@ -175,11 +221,29 @@ function onload({extensionAPI}) {
                     runSmartblockWorkflow(extensionAPI);
                 }
             }
-          } 
-          if (extensionAPI.settings.get('command-palette-button')) {
+        } 
+        if (extensionAPI.settings.get('command-palette-button')) {
             mobileBar.appendChild(commandPaletteIconButton);
             commandPaletteIconButton.onclick = () => {
                 toggleCommandPalette();
+            }
+        }
+        if (extensionAPI.settings.get('block-menu-button')) {
+            mobileBar.appendChild(blockMenuIconButton);
+            blockMenuIconButton.onclick = () => {
+                triggerBlockMenu();
+            }
+        }
+        if (extensionAPI.settings.get('block-ref-button')) {
+            mobileBar.appendChild(blockRefIconButton);
+            blockRefIconButton.onclick = () => {
+                getBlockRef();
+            }
+        }
+        if (extensionAPI.settings.get('curly-brackets-button')) {
+            mobileBar.appendChild(curlyBracketsIconButton);
+            curlyBracketsIconButton.onclick = () => {
+                formatdSelectedText('curly');
             }
         }
         
