@@ -20,6 +20,9 @@ export const formatdSelectedText = (style="bold") => {
     else if (style=='highlight') {
         var newText = text.replaceBetween(indexStart,indexEnd, `^^${selection}^^`);
     }
+    else if (style=='curly') {
+        var newText = text.replaceBetween(indexStart,indexEnd, `{{${selection}}}`);
+    }
   
     let blockUID = window.roamAlphaAPI.data.pull("[:block/uid]", [":block/uid", roamAlphaAPI.ui.getFocusedBlock()['block-uid']])[':block/uid'];
   
@@ -62,6 +65,13 @@ export const toggleBlockClose = () => {
       }
       
   };
+
+  export const deleteBlock = () => {
+    let uid = roamAlphaAPI.ui.getFocusedBlock()['block-uid'];
+    window
+    .roamAlphaAPI
+    .deleteBlock({"block": 
+                    {"uid": uid}})}
 
 export const toggleCommandPalette = () => {  
     const convertShortcut = () => {
