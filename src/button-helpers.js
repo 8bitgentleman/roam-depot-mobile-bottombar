@@ -111,6 +111,22 @@ export const getBlockRef = () => {
     }, function(err) {
       console.error('Async: Could not copy text: ', err);
     });
-
-    
 }  
+
+export const toggleHeading = () => {
+    let block = window.roamAlphaAPI.ui.getFocusedBlock()
+
+    // check if a block is focused
+    if (block !=null) {
+        let uid = block['block-uid'];
+        // default blocks don't always have view-type set if so assume bullet
+        let headingObj = window.roamAlphaAPI.data.pull("[:block/heading]", [":block/uid", uid]);
+        let heading = headingObj ? headingObj[':block/heading'] : null;
+        let newHeading = heading ? heading - 1 : 3;  
+
+        window.roamAlphaAPI.updateBlock(
+            {"block": 
+                {"uid": uid,
+                "heading": newHeading}})
+    }
+}

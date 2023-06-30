@@ -19,10 +19,11 @@ import {
     triggerBlockMenu,
     getBlockRef,
     deleteBlock,
+    toggleHeading,
 } from "./button-helpers.js"
 
 import SmartblockConfig from "./components/smartblockConfig";
-
+import HotKeyPanel from "./components/HotKeyPanel";
 
 // store observers globally so they can be disconnected 
 var runners = {
@@ -42,10 +43,12 @@ const MOBILE_COMMAND_PALETTE_ICON_BUTTON_ID = "mobile-command-icon-button";
 const MOBILE_BLOCK_MENU_ICON_BUTTON_ID = "mobile-block-menu-icon-button";
 const MOBILE_BLOCK_REF_ICON_BUTTON_ID = "mobile-block-ref-icon-button";
 const MOBILE_CURLY_BRACKETS_ICON_BUTTON_ID = "mobile-curly-brackets-icon-button";
+const MOBILE_HEADING_ICON_BUTTON_ID = "mobile-heading-icon-button";
 let previousActiveElement;
 
 function onload({extensionAPI}) {
     const wrappedSmartblockConfig = () => SmartblockConfig({ extensionAPI });
+    // const wrappedHotKeyPanel = () => HotKeyPanel({ extensionAPI });
     const panelConfig = {
         tabTitle: "Custom Mobile Buttons",
         settings: [
@@ -119,7 +122,7 @@ function onload({extensionAPI}) {
                                 }
                             }}},
             {id:          "command-palette-button",
-                name:        "Open Command Pallette Button",
+                name:        "Open Command Palette Button",
                 description: "Adds a button to open the command palette",
                 action:      {type:     "switch",
                             onChange: (evt) => { 
@@ -147,7 +150,27 @@ function onload({extensionAPI}) {
                                 if (!evt['target']['checked']) {
                                     destroyButton(MOBILE_BLOCK_REF_ICON_BUTTON_ID)
                                 }
-                            }}}
+                            }}},
+            {id:          "heading-button",
+                name:        "Toggle Heading Level",
+                description: "Cycles through the heading",
+                action:      {type:     "switch",
+                            onChange: (evt) => { 
+                                // toggle button on/off
+                                if (!evt['target']['checked']) {
+                                    destroyButton(MOBILE_HEADING_ICON_BUTTON_ID)
+                                }
+                            }}},
+            // {
+            //     id: "hot-keys",
+            //     name: "Hot Key Button",
+            //     description:
+            //         "Adds a button that will trigger a custom hotkey",
+            //     action: {
+            //         type: "reactComponent",
+            //         component: wrappedHotKeyPanel,
+            //     },
+            // },
             
         ]
       };
@@ -198,7 +221,11 @@ function onload({extensionAPI}) {
         MOBILE_CURLY_BRACKETS_ICON_BUTTON_ID,
         "{{"
         );
-
+    const headingIconButton = createMobileIcon(
+        MOBILE_HEADING_ICON_BUTTON_ID,
+        "header-one"
+        );
+    
     moreIconButton.onclick = () => {
         const mobileBar = document.getElementById("rm-mobile-bar");
         // save the existing bottom bar so it can be replaced later
@@ -268,7 +295,12 @@ function onload({extensionAPI}) {
                 formatdSelectedText('curly');
             }
         }
-        
+        if (extensionAPI.settings.get('heading-button')) {
+            mobileBar.appendChild(headingIconButton);
+            headingIconButton.onclick = () => {
+                toggleHeading();
+            }
+        }
         // always append the back button
         mobileBar.appendChild(backIconButton);
         // if (previousActiveElement.tagName === "TEXTAREA") {
