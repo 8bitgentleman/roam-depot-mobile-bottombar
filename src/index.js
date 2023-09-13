@@ -163,7 +163,7 @@ function onload({extensionAPI}) {
                                 }
                             }}},
             {id:          "hash-button",
-            name:        "# Button",
+            name:        "Hash Button",
             description: "Adds a button to quickly add in the # symbol",
             action:      {type:     "switch",
                         onChange: (evt) => { 
@@ -319,8 +319,8 @@ function onload({extensionAPI}) {
         if (extensionAPI.settings.get('hash-button')) {
             mobileBar.appendChild(hashIconButton);
             hashIconButton.onclick = (e) => {
-                formatdSelectedText('hash');
                 e.preventDefault();
+                formatdSelectedText('hash');
             }
         }
         // always append the back button
