@@ -44,6 +44,7 @@ const MOBILE_BLOCK_MENU_ICON_BUTTON_ID = "mobile-block-menu-icon-button";
 const MOBILE_BLOCK_REF_ICON_BUTTON_ID = "mobile-block-ref-icon-button";
 const MOBILE_CURLY_BRACKETS_ICON_BUTTON_ID = "mobile-curly-brackets-icon-button";
 const MOBILE_HEADING_ICON_BUTTON_ID = "mobile-heading-icon-button";
+const MOBILE_HASH_ICON_BUTTON_ID = "mobile-hash-icon-button";
 let previousActiveElement;
 
 function onload({extensionAPI}) {
@@ -161,6 +162,16 @@ function onload({extensionAPI}) {
                                     destroyButton(MOBILE_HEADING_ICON_BUTTON_ID)
                                 }
                             }}},
+            {id:          "hash-button",
+            name:        "# Button",
+            description: "Adds a button to quickly add in the # symbol",
+            action:      {type:     "switch",
+                        onChange: (evt) => { 
+                            // toggle button on/off
+                            if (!evt['target']['checked']) {
+                                destroyButton(MOBILE_HASH_ICON_BUTTON_ID)
+                            }
+                        }}},
             // {
             //     id: "hot-keys",
             //     name: "Hot Key Button",
@@ -224,6 +235,10 @@ function onload({extensionAPI}) {
     const headingIconButton = createMobileIcon(
         MOBILE_HEADING_ICON_BUTTON_ID,
         "header-one"
+        );
+    const hashIconButton = createMobileTextButton(
+        MOBILE_HASH_ICON_BUTTON_ID,
+        "#"
         );
     
     moreIconButton.onclick = () => {
@@ -299,6 +314,12 @@ function onload({extensionAPI}) {
             mobileBar.appendChild(headingIconButton);
             headingIconButton.onclick = () => {
                 toggleHeading();
+            }
+        }
+        if (extensionAPI.settings.get('hash-button')) {
+            mobileBar.appendChild(hashIconButton);
+            hashIconButton.onclick = () => {
+                formatdSelectedText('hash');
             }
         }
         // always append the back button
