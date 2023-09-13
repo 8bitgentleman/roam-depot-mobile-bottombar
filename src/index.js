@@ -240,7 +240,7 @@ function onload({extensionAPI}) {
         MOBILE_HASH_ICON_BUTTON_ID,
         "#"
         );
-    
+
     moreIconButton.onclick = () => {
         const mobileBar = document.getElementById("rm-mobile-bar");
         // save the existing bottom bar so it can be replaced later
@@ -318,8 +318,9 @@ function onload({extensionAPI}) {
         }
         if (extensionAPI.settings.get('hash-button')) {
             mobileBar.appendChild(hashIconButton);
-            hashIconButton.onclick = () => {
+            hashIconButton.onclick = (e) => {
                 formatdSelectedText('hash');
+                e.preventDefault();
             }
         }
         // always append the back button
