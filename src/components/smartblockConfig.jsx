@@ -1,8 +1,9 @@
-import { InputGroup, Switch, Label } from "@blueprintjs/core";
-import { useMemo, useState, useRef, useEffect } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import {
   destroyButton,
 } from "../entry-helpers.js";
+
+const { InputGroup, Switch, Label } = window.Blueprint.Core;
 
 const SmartblockConfig = ({ extensionAPI }) => {
   const config = useMemo(

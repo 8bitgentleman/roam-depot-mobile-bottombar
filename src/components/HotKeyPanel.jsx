@@ -1,10 +1,9 @@
-import { InputGroup, Switch, Label, Intent } from "@blueprintjs/core";
-
-import { useMemo, useState, useRef, useEffect } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import {
   destroyButton,
 } from "../entry-helpers.js";
-import { OnloadArgs } from "roamjs-components/types/native";
+
+const { InputGroup, Switch, Label, Intent } = window.Blueprint.Core;
 
 const HotKeyEntry = ({
   hotkey,

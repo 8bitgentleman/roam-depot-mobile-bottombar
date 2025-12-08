@@ -48,6 +48,19 @@ const MOBILE_HASH_ICON_BUTTON_ID = "mobile-hash-icon-button";
 let previousActiveElement;
 
 function onload({extensionAPI}) {
+    // Check if running on mobile - skip if not
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const mobileBar = document.getElementById("rm-mobile-bar");
+
+    if (!isMobile) {
+        console.log("Mobile Bottombar: Not on mobile device, skipping initialization");
+        return;
+    }
+
+    if (!mobileBar) {
+        console.warn("Mobile Bottombar: Mobile bar not found, extension may not work properly");
+    }
+
     const wrappedSmartblockConfig = () => SmartblockConfig({ extensionAPI });
     // const wrappedHotKeyPanel = () => HotKeyPanel({ extensionAPI });
     const panelConfig = {

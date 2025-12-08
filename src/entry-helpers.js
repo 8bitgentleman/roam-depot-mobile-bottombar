@@ -1,6 +1,69 @@
 // mostly borrowed from roamjs-com
 // https://github.com/dvargas92495/roamjs-com/blob/4901f3519fb9749ce5fb31cb0955906a43e80e2c/src/entry-helpers.ts
 
+// Helper function to show user notifications
+export const showNotification = (message, type = 'info') => {
+    // Use a simple visual feedback for mobile
+    // Create a temporary toast notification
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${type === 'error' ? '#F55656' : '#0F9960'};
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 14px;
+        z-index: 10000;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        animation: fadeInOut 2.5s ease-in-out;
+    `;
+
+    // Add CSS animation
+    if (!document.getElementById('mobile-bottombar-toast-styles')) {
+        const style = document.createElement('style');
+        style.id = 'mobile-bottombar-toast-styles';
+        style.textContent = `
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+                10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+};
+
+// Helper function to get the active textarea more reliably
+export const getActiveTextarea = () => {
+    // First try to get the actively focused element
+    const focused = document.activeElement;
+    if (focused?.tagName === 'TEXTAREA') {
+        return focused;
+    }
+
+    // Fallback to finding textarea via Roam's API
+    try {
+        const focusedBlock = window.roamAlphaAPI?.ui?.getFocusedBlock();
+        if (focusedBlock?.['block-uid']) {
+            const textarea = document.querySelector(`[id$="${focusedBlock['block-uid']}"] textarea`);
+            if (textarea) return textarea;
+        }
+    } catch (error) {
+        console.warn("Mobile Bottombar: Could not get focused block via API");
+    }
+
+    // Last resort: first textarea (original behavior)
+    return document.querySelector("textarea");
+};
+
 export const createMobileIcon = (
     id,
     iconType
