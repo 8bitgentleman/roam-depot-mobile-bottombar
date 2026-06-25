@@ -156,32 +156,34 @@ export const deleteBlock = () => {
 
 export const toggleCommandPalette = () => {
     try {
-        const evt = new KeyboardEvent("keydown", {
-            metaKey: true,
-            ctrlKey: true, // Add both for cross-platform compatibility
-            key: "p",
-            code: "KeyP",
-            bubbles: true,
-            cancelable: true,
-            composed: true,
-            keyCode: 80,
-        });
+        // Dispatch onto the currently-focused element (the editing textarea, kept
+        // focused by the `dont-unfocus-block` class) so the event bubbles up to
+        // Roam's global keydown handler exactly as a real keypress would. Fall
+        // back to document if nothing is focused.
+        const target = getActiveTextarea() || document.activeElement || document;
 
-        // Try multiple targets to ensure the command palette opens
-        const targets = [
-            document.activeElement,
-            document.querySelector('textarea'),
-            document.querySelector('.roam-body'),
-            document.body
-        ];
+        const fire = (mods) => {
+            ["keydown", "keyup"].forEach((type) => {
+                target.dispatchEvent(new KeyboardEvent(type, {
+                    ...mods,
+                    key: "p",
+                    code: "KeyP",
+                    bubbles: true,
+                    cancelable: true,
+                    composed: true,
+                    keyCode: 80,
+                    which: 80,
+                }));
+            });
+        };
 
-        for (const target of targets) {
-            if (target) {
-                target.dispatchEvent(evt);
-                console.log("Mobile Bottombar: Command palette triggered");
-                break;
-            }
-        }
+        // The command-palette shortcut is user-configurable and NOT exposed via
+        // the Roam API, so we can't read it. Fire both common bindings as separate
+        // single-modifier events; whichever matches the user's binding triggers,
+        // the other is a no-op. (Setting both modifiers at once matches neither.)
+        fire({ ctrlKey: true });
+        fire({ metaKey: true });
+        console.log("Mobile Bottombar: Command palette triggered");
     } catch (error) {
         console.error("Mobile Bottombar: Command palette error:", error);
     }
@@ -196,7 +198,9 @@ export const triggerBlockMenu = () => {
             return;
         }
 
-        const block = textArea.parentNode?.parentElement;
+        // Walk up to the block container that holds the bullet, rather than
+        // assuming a fixed parentNode depth (Roam's DOM nesting varies).
+        const block = textArea.closest(".rm-block-main") || textArea.closest(".roam-block-container") || textArea.parentNode?.parentElement;
         if (!block) {
             console.warn("Mobile Bottombar: Could not find block element");
             return;
@@ -208,10 +212,18 @@ export const triggerBlockMenu = () => {
             return;
         }
 
+        // Roam only opens the bullet menu for a right-click: the event needs
+        // button/buttons set to the secondary button, and clientX/Y at the
+        // bullet's on-screen position so the menu has somewhere to render.
+        const rect = bullet.getBoundingClientRect();
         const event = new MouseEvent('contextmenu', {
-            'view': window,
-            'bubbles': true,
-            'cancelable': true
+            view: window,
+            bubbles: true,
+            cancelable: true,
+            button: 2,
+            buttons: 2,
+            clientX: Math.round(rect.left + rect.width / 2),
+            clientY: Math.round(rect.top + rect.height / 2),
         });
 
         bullet.dispatchEvent(event);
